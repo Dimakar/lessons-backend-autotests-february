@@ -10,18 +10,25 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import ru.gb.restassured.dto.shop.PhoneDto;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class MongoConnector {
 
     @SneakyThrows
     public static MongoDatabase getDataBase() {
-        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
-                MongoClientSettings.getDefaultCodecRegistry(),
-                CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())
-        );
+        try {
+            CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+                    MongoClientSettings.getDefaultCodecRegistry(),
+                    CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())
+            );
 
-        return MongoClients.create("mongodb://root:password@localhost:27017")
-                .getDatabase("mobileShop")
-                .withCodecRegistry(codecRegistry);
+            return MongoClients.create("mongodb://root:password@localhost:27017")
+                    .getDatabase("mobileShop")
+                    .withCodecRegistry(codecRegistry);
+        } catch (Exception e) {
+            fail(e);
+        }
+        return null;
     }
 
 }
